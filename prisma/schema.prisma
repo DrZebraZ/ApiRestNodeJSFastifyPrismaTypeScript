@@ -1,0 +1,124 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator erd {
+  provider = "prisma-erd-generator"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  String   @id @default(cuid())
+  email               String   @unique
+  password            String
+  salt                String
+  name                String
+  cpf                 String   @unique
+  datenasc            String?
+  avatarUrl           String?
+  personalDescription String?
+  createdAt           DateTime @default(now())
+  active              Boolean  @default(true)
+
+  token String @unique @default(cuid())
+
+  Tccs        Tcc[]
+  Orientation Orientation[]
+  classId     String
+
+  Class Class @relation(fields: [classId], references: [id])
+}
+
+model Professor {
+  id                  String   @id @default(cuid())
+  email               String   @unique
+  password            String
+  salt                String
+  name                String
+  cpf                 String   @unique
+  datenasc            String?
+  avatarUrl           String?
+  personalDescription String?
+  createdAt           DateTime @default(now())
+  active              Boolean  @default(true)
+
+  orientations Orientation[]
+
+  token String @unique @default(cuid())
+
+  tccs Tcc[]
+
+  classes Class[]
+
+  coordinate Class[] @relation(name: "coordinator")
+}
+
+model Class {
+  id          String @id @unique @default(cuid())
+  name        String
+  classAreaId String
+
+  coordinatorId String?
+  coordinator   Professor? @relation(name: "coordinator", fields: [coordinatorId], references: [id])
+
+  users      User[]
+  professors Professor[]
+
+  tccs Tcc[]
+
+  classArea Classarea @relation(fields: [classAreaId], references: [id])
+}
+
+model Classarea {
+  id      String  @id @unique @default(cuid())
+  name    String
+  classes Class[]
+}
+
+model Tcc {
+  id            String  @id @unique @default(cuid())
+  title         String
+  summary       String
+  classId       String
+  userId        String
+  professorId   String?
+  orientationId String?
+  docFileLink   String? @unique
+
+  status String @default("ANDAMENTO")
+
+  user User @relation(fields: [userId], references: [id])
+
+  professor Professor? @relation(fields: [professorId], references: [id])
+
+  orientation Orientation?
+  Class       Class        @relation(fields: [classId], references: [id])
+}
+
+model Orientation {
+  id          String     @id @unique
+  tccId       String     @unique
+  professorId String?
+  userId      String
+  messages    Message[]
+  professor   Professor? @relation(fields: [professorId], references: [id])
+  user        User       @relation(fields: [userId], references: [id])
+
+  tcc Tcc @relation(fields: [tccId], references: [id])
+}
+
+model Message {
+  id            String      @id @default(cuid())
+  createdAt     DateTime    @default(now())
+  createdByUser Boolean     @default(true)
+  text          String
+  orientationId String
+  orientation   Orientation @relation(fields: [orientationId], references: [id])
+}
