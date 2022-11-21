@@ -112,6 +112,9 @@ model Orientation {
   user        User       @relation(fields: [userId], references: [id])
 
   tcc Tcc @relation(fields: [tccId], references: [id])
+
+  @@index([id, userId])
+  @@index([id, professorId])
 }
 
 model Message {

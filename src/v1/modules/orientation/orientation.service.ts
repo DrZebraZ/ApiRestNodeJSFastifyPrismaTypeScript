@@ -9,20 +9,29 @@ import { CreateMessageInput } from './orientation.schema';
 
 
 export async function createMessage(input:CreateMessageInput, header:any):Promise<any>{
-  const userID = getID(header)
+  const senderID = await getID(header)
   var byUser:boolean
-  if ((await (userID)).length == 12){
+  if ((senderID).length == 12){
     byUser = true
-  }else if((await (userID)).length == 8){
+  }else if((senderID).length == 8){
     byUser = false
   }else{
     return ("messages only can be created by User or Professor")
   }
-
   const { orientationId , text } = input
   const id = generateMessageID()
   const dateNow = await getDateNow()
-  try{
+  const isFrom = await prisma.orientation.findUnique({
+    where:{
+      id: orientationId
+    },
+    select:{
+      professorId: true,
+      userId: true
+    }
+  })
+  if (isFrom?.professorId === senderID || isFrom?.userId === senderID){
+    try{
     await prisma.orientation.update({
       where:{
         id: orientationId
@@ -39,8 +48,11 @@ export async function createMessage(input:CreateMessageInput, header:any):Promis
       }
     })
     return true;
-  }catch(e){
-    return e;
+    }catch(e){
+      return e;
+    }
+  }else{
+    return("Only the professor or user can send messages on this orientation")
   }
 }
 

@@ -20,7 +20,7 @@ server.register(require('@fastify/jwt'), { secret: SUPERSECRET})
 
 server.decorate(
   'RequireAuth',
-  async (request, reply) => {
+  async (request:any, reply:any) => {
   try{
     await request.jwtVerify()
   }catch(e){

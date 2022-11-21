@@ -7,29 +7,29 @@ export default function errorHandler(e: any, message: string, reply:FastifyReply
   console.log(e)
   var statusCode = 500
   var errorMessage =  "Internal Server Error"
-  var code: string
-  var other: any
+  var code:string = "error 01"
+  var other: any | unknown | null
   if (typeof e === "string"){
     errorMessage = "JSON Error"
     statusCode = 400
     other = e
   }
   else if (e instanceof Prisma.PrismaClientKnownRequestError){
-    console.log("error 01")
+    console.log("error 02")
     statusCode = 401
     errorMessage = message
     other = e.meta
     code = e.code.toString()
     if (e.code === 'P2002'){
-      console.log("error 02")
-      code = '401'
+      console.log("error 03")
+      code = 'error 02'
       other = 'This value is already in use on field(s): ' + e.meta.target.toString()
     }
   }
   else if (e instanceof Prisma.PrismaClientValidationError){
     statusCode = 404
     errorMessage = message
-    code = 404
+    code = "error 04"
     other = e.message
   }
   return reply.

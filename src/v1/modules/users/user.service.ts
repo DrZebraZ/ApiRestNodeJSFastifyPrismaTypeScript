@@ -36,7 +36,7 @@ export async function createUser(input: CreateUserInput):Promise<any>{
 }
 
 export async function getAllUsers():Promise<any>{
-  return await prisma.user.findMany({
+  const users = await prisma.user.findMany({
     orderBy:{
       name: "asc"
     },
@@ -47,6 +47,8 @@ export async function getAllUsers():Promise<any>{
       datenasc: true
     }
   })
+  console.log(users)
+  return ({"data": users})
 }
 
 export async function userLogin(input: CreateUserLoginInput):Promise<any>{
