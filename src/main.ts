@@ -5,6 +5,7 @@ import { userSchemas } from './v1/modules/users/user.schema';
 import { SUPERSECRET } from './env';
 import tccRoutesV1 from './v1/modules/tcc/tcc.route';
 import guidanceRoutesV1 from './v1/modules/guidance/guidance.route';
+import messagesRoutesV1 from './v1/modules/messages/msg.route';
 
 
 export const server = require('fastify')()
@@ -43,6 +44,7 @@ async function main(){
   server.register(classAreaRoutesV1, { prefix: 'api/v1/class/area'})
   server.register(tccRoutesV1, { prefix: 'api/v1/tcc' })
   server.register(guidanceRoutesV1, { prefix: 'api/v1/guidance' })
+  server.register(messagesRoutesV1, { prefix: 'api/v1/messages' })
 
   try{
     await server.listen({ port: 3333, host: '0.0.0.0'})
