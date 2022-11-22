@@ -25,7 +25,7 @@ export function generateUserID(): string {
   return id
 }
 
-export function generateOrientationID(): string{
+export function generateGuidanceID(): string{
   const generate = new ShortUniqueId({length: 14})
   const id = String(generate())
   return id.toLowerCase()

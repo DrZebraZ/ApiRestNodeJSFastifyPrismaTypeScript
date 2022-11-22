@@ -47,7 +47,6 @@ export async function getAllUsers():Promise<any>{
       datenasc: true
     }
   })
-  console.log(users)
   return ({"data": users})
 }
 

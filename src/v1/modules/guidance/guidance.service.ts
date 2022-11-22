@@ -4,7 +4,7 @@ import { generateMessageID } from "../../../utils/generate";
 import prisma from "../../../utils/prisma";
 import { getDateNow } from "../../../utils/utils";
 import { getID } from "../../../utils/verifyToken";
-import { CreateMessageInput } from './orientation.schema';
+import { CreateMessageInput } from './guidance.schema'
 
 
 
@@ -18,12 +18,12 @@ export async function createMessage(input:CreateMessageInput, header:any):Promis
   }else{
     return ("messages only can be created by User or Professor")
   }
-  const { orientationId , text } = input
+  const { guidanceId , text } = input
   const id = generateMessageID()
   const dateNow = await getDateNow()
-  const isFrom = await prisma.orientation.findUnique({
+  const isFrom = await prisma.guidance.findUnique({
     where:{
-      id: orientationId
+      id: guidanceId
     },
     select:{
       professorId: true,
@@ -32,9 +32,9 @@ export async function createMessage(input:CreateMessageInput, header:any):Promis
   })
   if (isFrom?.professorId === senderID || isFrom?.userId === senderID){
     try{
-    await prisma.orientation.update({
+    await prisma.guidance.update({
       where:{
-        id: orientationId
+        id: guidanceId
       },
       data:{
         messages:{
@@ -52,11 +52,18 @@ export async function createMessage(input:CreateMessageInput, header:any):Promis
       return e;
     }
   }else{
-    return("Only the professor or user can send messages on this orientation")
+    return(
+      {"data":{
+        "message":"only the professor or user can send mensagens on this guidance",
+        "error": "not allowed"
+      }
+    })
   }
 }
 
 //get messages
+
+
 
 //delete message
 

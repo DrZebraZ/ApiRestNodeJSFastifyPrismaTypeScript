@@ -19,9 +19,13 @@ export default function replyHandler(input: any, texto: string, code:number, rep
 
     return reply.code(200).send(input)
 
+  }else if( "data" in input && "error" in input["data"]){
+    
+    return reply.code(400).send({ data: input["data"]})
+  
   }else if( "data" in input){
 
-    return reply.code(200).send({ message: input["data"]})
+    return reply.code(200).send({ data: input["data"]})
 
   }else{
     errorHandler(input, "error: "+ texto, reply)

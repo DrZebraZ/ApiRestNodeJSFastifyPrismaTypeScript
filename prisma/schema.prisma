@@ -29,9 +29,9 @@ model User {
 
   token String @unique @default(cuid())
 
-  Tccs        Tcc[]
-  Orientation Orientation[]
-  classId     String
+  Tccs     Tcc[]
+  guidance Guidance[]
+  classId  String
 
   Class Class @relation(fields: [classId], references: [id])
 }
@@ -49,7 +49,7 @@ model Professor {
   createdAt           DateTime @default(now())
   active              Boolean  @default(true)
 
-  orientations Orientation[]
+  guidances Guidance[]
 
   token String @unique @default(cuid())
 
@@ -83,14 +83,14 @@ model Classarea {
 }
 
 model Tcc {
-  id            String  @id @unique @default(cuid())
-  title         String
-  summary       String
-  classId       String
-  userId        String
-  professorId   String?
-  orientationId String?
-  docFileLink   String? @unique
+  id          String  @id @unique @default(cuid())
+  title       String
+  summary     String
+  classId     String
+  userId      String
+  professorId String?
+  guidanceId  String?
+  docFileLink String? @unique
 
   status String @default("ANDAMENTO")
 
@@ -98,11 +98,11 @@ model Tcc {
 
   professor Professor? @relation(fields: [professorId], references: [id])
 
-  orientation Orientation?
-  Class       Class        @relation(fields: [classId], references: [id])
+  guidance Guidance?
+  Class    Class     @relation(fields: [classId], references: [id])
 }
 
-model Orientation {
+model Guidance {
   id          String     @id @unique
   tccId       String     @unique
   professorId String?
@@ -118,10 +118,10 @@ model Orientation {
 }
 
 model Message {
-  id            String      @id @default(cuid())
-  createdAt     DateTime    @default(now())
-  createdByUser Boolean     @default(true)
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  createdByUser Boolean  @default(true)
   text          String
-  orientationId String
-  orientation   Orientation @relation(fields: [orientationId], references: [id])
+  guidanceId    String
+  guidance      Guidance @relation(fields: [guidanceId], references: [id])
 }

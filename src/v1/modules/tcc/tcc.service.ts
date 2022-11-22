@@ -1,7 +1,7 @@
 import jwtDecode from "jwt-decode";
 import prisma from "../../../utils/prisma";
 import { CreateTccInput } from "./tcc.schema";
-import { generateTccID, generateOrientationID } from '../../../utils/generate';
+import { generateTccID, generateGuidanceID } from '../../../utils/generate';
 import { getToken } from "../../../utils/verifyToken";
 
 export async function createTCC(input: CreateTccInput, header:any):Promise<any>{
@@ -15,14 +15,13 @@ export async function createTCC(input: CreateTccInput, header:any):Promise<any>{
   }
   const user = await prisma.user.findUnique({
     where:{
-      token
+      token: token
     }
   })
-  console.log(user)
   if (user){
     try{
       const idTcc = generateTccID()
-      const idOrientacao = generateOrientationID()
+      const idGuidance = generateGuidanceID()
       await prisma.tcc.create({
         data:{
           id: idTcc,
@@ -32,9 +31,9 @@ export async function createTCC(input: CreateTccInput, header:any):Promise<any>{
           userId:user.id,
         }
       })
-      await prisma.orientation.create({
+      await prisma.guidance.create({
         data:{
-          id: idOrientacao,
+          id: idGuidance,
           tccId: idTcc,
           userId: user.id,
         }
@@ -44,6 +43,7 @@ export async function createTCC(input: CreateTccInput, header:any):Promise<any>{
       return e
     }
   }else{
+    console.log("No user found")
     return (false)
   }
 

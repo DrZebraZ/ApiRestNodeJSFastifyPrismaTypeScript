@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import replyHandler from '../../../utils/replyHandler';
-import { CreateMessageInput } from './orientation.schema';
-import { createMessage } from './orientation.service';
+import { CreateMessageInput } from './guidance.schema';
+import { createMessage } from './guidance.service';
 
 
 export async function createMessageHandler(request: FastifyRequest<{Body:CreateMessageInput}>, reply: FastifyReply){
