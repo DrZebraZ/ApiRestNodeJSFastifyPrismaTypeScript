@@ -15,17 +15,25 @@ datasource db {
 }
 
 model User {
+  email    String @unique
+  cpf      String @unique
+  password String
+  salt     String
+
+  Student   Student[]
+  Professor Professor[]
+}
+
+model Student {
   id                  String   @id @default(cuid())
-  email               String   @unique
-  password            String
-  salt                String
   name                String
-  cpf                 String   @unique
   datenasc            String?
   avatarUrl           String?
   personalDescription String?
   createdAt           DateTime @default(now())
   active              Boolean  @default(true)
+
+  user User @relation(fields: [userEmail], references: [email])
 
   token String @unique @default(cuid())
 
@@ -33,21 +41,20 @@ model User {
   guidance Guidance[]
   classId  String
 
-  Class Class @relation(fields: [classId], references: [id])
+  Class     Class  @relation(fields: [classId], references: [id])
+  userEmail String
 }
 
 model Professor {
   id                  String   @id @default(cuid())
-  email               String   @unique
-  password            String
-  salt                String
   name                String
-  cpf                 String   @unique
   datenasc            String?
   avatarUrl           String?
   personalDescription String?
   createdAt           DateTime @default(now())
   active              Boolean  @default(true)
+
+  user User @relation(fields: [userEmail], references: [email])
 
   guidances Guidance[]
 
@@ -58,6 +65,7 @@ model Professor {
   classes Class[]
 
   coordinate Class[] @relation(name: "coordinator")
+  userEmail  String
 }
 
 model Class {
@@ -68,7 +76,7 @@ model Class {
   coordinatorId String?
   coordinator   Professor? @relation(name: "coordinator", fields: [coordinatorId], references: [id])
 
-  users      User[]
+  students   Student[]
   professors Professor[]
 
   tccs Tcc[]
@@ -87,14 +95,14 @@ model Tcc {
   title       String
   summary     String
   classId     String
-  userId      String
+  studantId   String
   professorId String?
   guidanceId  String?
   docFileLink String? @unique
 
   status String @default("ANDAMENTO")
 
-  user User @relation(fields: [userId], references: [id])
+  student Student @relation(fields: [studantId], references: [id])
 
   professor Professor? @relation(fields: [professorId], references: [id])
 
@@ -106,22 +114,22 @@ model Guidance {
   id          String     @id @unique
   tccId       String     @unique
   professorId String?
-  userId      String
+  studantId   String
   messages    Message[]
   professor   Professor? @relation(fields: [professorId], references: [id])
-  user        User       @relation(fields: [userId], references: [id])
+  studant     Student    @relation(fields: [studantId], references: [id])
 
   tcc Tcc @relation(fields: [tccId], references: [id])
 
-  @@index([id, userId])
+  @@index([id, studantId])
   @@index([id, professorId])
 }
 
 model Message {
-  id            String   @id @default(cuid())
-  createdAt     DateTime @default(now())
-  createdByUser Boolean  @default(true)
-  text          String
-  guidanceId    String
-  guidance      Guidance @relation(fields: [guidanceId], references: [id])
+  id               String   @id @default(cuid())
+  createdAt        DateTime @default(now())
+  createdByStudent Boolean  @default(true)
+  text             String
+  guidanceId       String
+  guidance         Guidance @relation(fields: [guidanceId], references: [id])
 }

@@ -1,3 +1,4 @@
+import { buildJsonSchemas } from "fastify-zod";
 import { TypeOf, z } from "zod";
 
 
@@ -21,3 +22,14 @@ export type CreateClassInput = z.infer<typeof createClassSchema>;
 export type GetClassUsersInput = z.infer<typeof getClassUsersSchema>;
 
 export type GetClassProfessorInput = z.infer<typeof getClassProfessorSchema>;
+
+
+const models = {
+
+  createClassSchema,
+  getClassUsersSchema,
+  getClassProfessorSchema
+
+}
+
+export const { schemas: classSchemas, $ref} = buildJsonSchemas(models,{$id: "classSchemas"})

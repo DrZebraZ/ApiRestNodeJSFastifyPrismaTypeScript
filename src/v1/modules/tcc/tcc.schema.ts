@@ -18,7 +18,10 @@ const updateTccUrlSchema = z.object({
   docFileLink: z.string({required_error: "must inform the PDF URL"}).url()
 })
 
-export const { schemas: tccSchemas, $ref} = buildJsonSchemas({
+
+const models = {
   createTccSchema,
   updateTccUrlSchema
-})
+}
+
+export const { schemas: tccSchemas, $ref} = buildJsonSchemas(models, {$id: "tccSchemas"})

@@ -19,7 +19,7 @@ export function generateProfessorID(): string {
   return id
 }
 
-export function generateUserID(): string {
+export function generateStudentID(): string {
   const generate = new ShortUniqueId({length: 12})
   const id = String(generate())
   return id

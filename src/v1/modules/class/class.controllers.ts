@@ -2,22 +2,16 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import { createClass, getClasses, getProfessorsByClassId, getUsersByClassId } from './class.service';
 import { CreateClassInput, GetClassProfessorInput, GetClassUsersInput } from './class.schema';
 import errorHandler from '../../../utils/errorHandle';
+import replyHandler from '../../../utils/replyHandler';
 
 
-export async function registerClassHandler(
-  request: FastifyRequest<{Body : CreateClassInput}>,
-  reply: FastifyReply
-){
+export async function registerClassHandler(request: FastifyRequest<{Body : CreateClassInput}>,reply: FastifyReply){
   const body = request.body
-  try{
-    const newClass = await createClass(body);
-    console.log("Class created")
-    return reply.code(201).send(newClass);
-  }catch(e){
-    console.log("error at classControllers registerClassHandler " + e)
-    return reply.code(500).send(e)
-  }
+  const newClass = await createClass(body);
+  return replyHandler(newClass, "new Class", 201, reply)
+  
 }
+
 
 export async function getClassesHandler(){
   try{
@@ -27,10 +21,8 @@ export async function getClassesHandler(){
   }
 }
 
-export async function getUsersByClassIdHandler(
-  request: FastifyRequest<{Querystring: GetClassUsersInput}>,
-  reply: FastifyReply,
-){
+
+export async function getUsersByClassIdHandler(request: FastifyRequest<{Querystring: GetClassUsersInput}>,reply: FastifyReply,){
   console.log("Getting users from class " + request.query.classId)
   const query = request.query
   try{

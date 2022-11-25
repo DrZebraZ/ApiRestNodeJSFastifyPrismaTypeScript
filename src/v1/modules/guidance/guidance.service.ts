@@ -8,11 +8,3 @@ import { getID } from "../../../utils/verifyToken";
 
 
 
-
-//get messages
-
-
-
-//delete message
-
-//edit message

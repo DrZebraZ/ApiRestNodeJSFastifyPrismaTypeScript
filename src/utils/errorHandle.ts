@@ -22,7 +22,7 @@ export default function errorHandler(e: any, message: string, reply:FastifyReply
     code = e.code.toString()
     if (e.code === 'P2002'){
       console.log("error 03")
-      code = 'error 02'
+      code = 'error 03'
       other = 'This value is already in use on field(s): ' + e.meta.target.toString()
     }
   }

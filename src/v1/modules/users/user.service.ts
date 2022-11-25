@@ -1,16 +1,16 @@
 import { hashPassword, verifyPassword } from '../../../utils/hash';
-import prisma from "../../../utils/prisma"
-import { generateUserID, generateToken } from "../../../utils/generate"
-import { CreateUserInput, CreateUserLoginInput} from "./user.schema"
+import prisma from "../../../utils/prisma";
+import { generateToken, generateProfessorID, generateStudentID } from '../../../utils/generate';
+import { CreateProfessorInput, CreateStudentInput, CreateUserLoginInput} from "./user.schema";
 import { server } from '../../../main';
 import { ChangePasswordInput } from '../users/user.schema';
 import jwtDecode from 'jwt-decode';
 
 
-export async function createUser(input: CreateUserInput):Promise<any>{
-  const { password, classId, ...rest} = input;
+export async function createStudent(input: CreateStudentInput):Promise<any>{
+  const { password, classId, email, cpf, name } = input;
   const {hash, salt} = hashPassword(password)
-  const id = generateUserID()
+  const id = generateStudentID()
   const token = generateToken()
   try{
     await prisma.class.findFirstOrThrow({where:{id:{equals:classId}}})
@@ -21,12 +21,18 @@ export async function createUser(input: CreateUserInput):Promise<any>{
   try{
     const user:any = await prisma.user.create({
       data : {
-        ...rest,
-        id,
-        classId,
+        email,
+        cpf,
+        password:hash,
         salt,
-        password: hash,
-        token            
+        Student:{
+          create:{
+            id,
+            name,
+            token,
+            classId,
+          }
+        }  
       }
     })
     return (true)
@@ -38,45 +44,121 @@ export async function createUser(input: CreateUserInput):Promise<any>{
 export async function getAllUsers():Promise<any>{
   const users = await prisma.user.findMany({
     orderBy:{
-      name: "asc"
-    },
-    select:{
-      name: true,
-      personalDescription: true,
-      classId: true,
-      datenasc: true
+      email:"asc"
     }
   })
   return ({"data": users})
 }
 
-export async function userLogin(input: CreateUserLoginInput):Promise<any>{
-  console.log(input)
-  const { email, password } = input;
+export async function createProfessor(input: CreateProfessorInput):Promise<any>{
+  const { password, email, cpf, name } = input;
+  const {hash, salt} = hashPassword(password)
+  const id = generateProfessorID()
+  const token = generateToken()
   try{
-    const user = await prisma.user.findFirst({
-      where:{
-        email : email,
+    const user:any = await prisma.user.create({
+      data : {
+        email,
+        cpf,
+        password:hash,
+        salt,
+        Professor:{
+          create:{
+            name,
+            id,
+            token,
+          }
+        }
       }
     })
-    if (user){
-      const correctPassword = verifyPassword({candidatePassword: password, salt: user.salt, hash: user.password})
-      if (correctPassword){
-        const { password, salt, ...rest} = user
-        return { token: server.jwt.sign(rest) }
-      }else{
-        console.log("Invalid Password")
-        return (false)
-      }
-    }else{
-      return (false)
-    }
+    return (true)
   }catch(e){
     return (e)
   }
 }
 
-export async function changePassword(input: ChangePasswordInput, header:any):Promise<any>{
+export async function userLogin(input: CreateUserLoginInput):Promise<any>{
+  console.log(input.email)
+  const { email, password } = input;
+  try{
+    const student = await prisma.student.findFirstOrThrow({
+      where:{
+        user:{
+          email:email,
+        }
+      },
+      select: {
+        user:{
+          select:{
+            password:true,
+            salt:true,
+            email:true,
+            cpf: true
+          }
+        },
+        id: true,
+        token: true,
+      }
+    })
+    if (student){
+      console.log(student)
+      const correctPassword = verifyPassword({candidatePassword: password, salt: student.user.salt, hash: student.user.password})
+      if (correctPassword){
+        console.log(correctPassword)
+        const tokenFormatter = {
+          email: student.user.email,
+          id: student.id,
+          token: student.token,
+          cpf: student.user.cpf,
+        }
+        return {token: server.jwt.sign(tokenFormatter)}
+      }else{
+        console.log("Invalid Password")
+        return ({data:{ "error": "Invalid Password"}})
+      }
+    }
+  }catch{
+    try{
+      const professor = await prisma.professor.findFirstOrThrow({
+        where:{
+          user:{
+            email: email
+          }
+        },
+        select: {
+          user:{
+            select:{
+              password:true,
+              salt:true,
+              email:true,
+              cpf: true
+            }
+          },
+          id: true,
+          token: true,
+        }
+      })
+      if (professor){
+        const correctPassword = verifyPassword({candidatePassword: password, salt: professor.user.salt, hash: professor.user.password})
+        if (correctPassword){
+          const tokenFormatter = {
+            email: professor.user.email,
+            id: professor.id,
+            token: professor.token,
+            cpf: professor.user.cpf,
+          }
+          return {token: server.jwt.sign(tokenFormatter)}
+        }else{
+          console.log("invalid password")
+          return ({ data: {"error": "invalid password"}})
+        }
+      }
+    }catch{
+      return { data: {"error":"Email not found!"}}
+    }
+  }
+}
+/*export async function changePassword(input: ChangePasswordInput, header:any):Promise<any>{
   const authorized: any = await jwtDecode(header)
   const token = authorized.token.toString()
   const { password, newPassword } = input;
@@ -107,4 +189,4 @@ export async function changePassword(input: ChangePasswordInput, header:any):Pro
   }catch(e){
     return e
   }
-}
+}*/
