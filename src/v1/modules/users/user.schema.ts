@@ -38,7 +38,6 @@ const createUserLoginSchema = z.object({
 export type CreateUserLoginInput = z.infer<typeof createUserLoginSchema>
 
 const createChangePasswordSchema = z.object({
-  email: z.string({required_error: "Must inform a email"}).email({ message: 'Must be a valid email' }),
   password: z.string(),
   newPassword: z.string()
 }).required()

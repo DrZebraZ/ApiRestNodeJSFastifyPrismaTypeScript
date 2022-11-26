@@ -4,7 +4,6 @@ import errorHandler from './errorHandle';
 
 export default function replyHandler(input: any, texto: string, code:number, reply: FastifyReply, other?:any){
   console.log("Reply Handler")
-  console.log(input)
   if (input === true){
 
     console.log("Success: "+ texto );

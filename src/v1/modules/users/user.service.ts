@@ -41,15 +41,6 @@ export async function createStudent(input: CreateStudentInput):Promise<any>{
   }
 }
 
-export async function getAllUsers():Promise<any>{
-  const users = await prisma.user.findMany({
-    orderBy:{
-      email:"asc"
-    }
-  })
-  return ({"data": users})
-}
-
 export async function createProfessor(input: CreateProfessorInput):Promise<any>{
   const { password, email, cpf, name } = input;
   const {hash, salt} = hashPassword(password)
@@ -77,6 +68,15 @@ export async function createProfessor(input: CreateProfessorInput):Promise<any>{
   }
 }
 
+export async function getAllUsers():Promise<any>{
+  const users = await prisma.user.findMany({
+    orderBy:{
+      email:"asc"
+    }
+  })
+  return ({"data": users})
+}
+
 export async function userLogin(input: CreateUserLoginInput):Promise<any>{
   console.log(input.email)
   const { email, password } = input;
@@ -101,16 +101,15 @@ export async function userLogin(input: CreateUserLoginInput):Promise<any>{
       }
     })
     if (student){
-      console.log(student)
       const correctPassword = verifyPassword({candidatePassword: password, salt: student.user.salt, hash: student.user.password})
       if (correctPassword){
-        console.log(correctPassword)
         const tokenFormatter = {
           email: student.user.email,
           id: student.id,
           token: student.token,
           cpf: student.user.cpf,
         }
+        console.log("Student logged in successfully!")
         return {token: server.jwt.sign(tokenFormatter)}
       }else{
         console.log("Invalid Password")
@@ -147,6 +146,7 @@ export async function userLogin(input: CreateUserLoginInput):Promise<any>{
             token: professor.token,
             cpf: professor.user.cpf,
           }
+          console.log("Professor logged in successfully!")
           return {token: server.jwt.sign(tokenFormatter)}
         }else{
           console.log("invalid password")
@@ -158,19 +158,20 @@ export async function userLogin(input: CreateUserLoginInput):Promise<any>{
     }
   }
 }
-/*export async function changePassword(input: ChangePasswordInput, header:any):Promise<any>{
+
+export async function changePassword(input: ChangePasswordInput, header:any):Promise<any>{
   const authorized: any = await jwtDecode(header)
-  const token = authorized.token.toString()
+  const email = authorized.email.toString()
   const { password, newPassword } = input;
   const oldPass = password
   const newPass = newPassword
   try{
     const person = await prisma.user.findFirstOrThrow({
       where: {
-        token : token 
+        email: email,
       }
     })
-    console.log(person.name)
+    console.log(person.email)
     const verify = verifyPassword({candidatePassword: oldPass, salt: person.salt, hash: person.password})
     if (verify === true){
       const {hash, salt} = hashPassword(newPass)
@@ -181,7 +182,7 @@ export async function userLogin(input: CreateUserLoginInput):Promise<any>{
           password: newPassword,
           salt: newSalt,
         }, where:{
-          token: token
+          email: person.email
         }
       })
       return true
@@ -189,4 +190,5 @@ export async function userLogin(input: CreateUserLoginInput):Promise<any>{
   }catch(e){
     return e
   }
-}*/
+}
+

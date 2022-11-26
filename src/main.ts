@@ -14,6 +14,8 @@ import { msgSchemas } from './v1/modules/messages/msg.schema';
 import { classSchemas } from './v1/modules/class/class.schema';
 import { classAreaSchemas } from './v1/modules/classArea/classArea.schema';
 import { FastifyRequest, FastifyReply } from 'fastify';
+import { hashPassword } from './utils/hash';
+import { string } from 'zod';
 
 
 export const server = require('fastify')()
@@ -53,6 +55,10 @@ export async function RequireAdmin(request:FastifyRequest, reply:FastifyReply) {
 
 server.get('/healthcheck', async function() {
   return { status: "OK"};
+})
+
+server.post('/generatePassword', async function(request:FastifyRequest<{Body: {password:string}}>, reply:FastifyReply) {
+  return hashPassword(request.body.password)
 })
 
 async function main(){
