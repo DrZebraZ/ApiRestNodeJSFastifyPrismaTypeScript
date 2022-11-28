@@ -1,0 +1,103 @@
+ROUTES:
+================================================================
+Login/SignUp
+================================================================
+Sign UP
+
+1:
+GET: localhost:3333/api/v1/class/getAllClasses
+response:
+[
+    {
+        "id": "LWMQ",
+        "name": "COMPUTER SCIENCE",
+        "classArea": {
+            "name": "Tenologia",
+            "id": "TI"
+        }
+    }
+]
+no need headers or body
+get the classId and go
+2:
+POST: localhost:3333/api/v1/user/create
+json:
+{
+    "email": "aluno@teste.com",
+    "password": "123456",
+    "name": "Luis Andres",
+    "cpf": "12345678901",
+    "classId": "LWMQ"
+}
+response:
+{
+    "message": "Success: Create User"
+}
+
+================================================================
+Sign In / Login
+
+POST: localhost:3333/api/v1/user/login
+json: 
+{
+    "email":"professor@teste.com",
+    "password":"1234567"
+}
+response:
+{
+    "token": " JWT TOKEN HERE "
+    "guidance": [
+        {
+            "id": "wcctgbvwwd0f01" (if have any guidances)
+        }
+    ]
+}
+
+================================================================
+TCC
+================================================================
+Create TCC
+
+POST localhost:3333/api/v1/tcc/create
+json:
+{
+    "title": "TCC TESTE",
+    "summary": "teste descricao aaaaaaaaaaaaaaaaaaa"
+}
+headers:
+Bearer Token (JWT token on login)
+
+response:
+{
+    "data": {
+        "tcc": {
+            "id": "7GAWFGSEWIURNK",
+            "title": "TCC TESTE",
+            "summary": "teste descricao aaaaaaaaaaaaaaaaaaa",
+            "classId": "LWMQ",
+            "studentId": "hRKzy3cDuglZ",
+            "teacherId": null,
+            "guidanceId": "wcctgbvwwd0f01",
+            "docFileLink": null,
+            "status": "ANDAMENTO"
+        }
+    }
+}
+
+================================================================
+Guidance
+================================================================
+Send Message
+localhost:3333/api/v1/messages/sendMessage
+json:
+{
+    "text":"salve salve PROFESSOR",
+    "guidanceId":"wcctgbvwwd0f01"
+}
+headers:
+Bearer Token (JWT token on login)
+
+response:
+{
+    "message": "Success: sending Message"
+}
