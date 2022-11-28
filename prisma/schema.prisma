@@ -76,8 +76,8 @@ model Class {
   coordinatorId String?
   coordinator   Teacher? @relation(name: "coordinator", fields: [coordinatorId], references: [id])
 
-  students  Student[]
-  teatchers Teacher[]
+  students Student[]
+  teachers Teacher[]
 
   tccs Tcc[]
 
@@ -95,7 +95,7 @@ model Tcc {
   title       String
   summary     String
   classId     String
-  studentId   String
+  studentId   String  @unique
   teacherId   String?
   guidanceId  String?
   docFileLink String? @unique
@@ -108,6 +108,8 @@ model Tcc {
 
   guidance Guidance?
   Class    Class     @relation(fields: [classId], references: [id])
+
+  @@index([studentId, id])
 }
 
 model Guidance {

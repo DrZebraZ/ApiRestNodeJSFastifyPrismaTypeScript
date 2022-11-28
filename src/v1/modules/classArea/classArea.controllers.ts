@@ -1,5 +1,4 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { RequireAdmin } from '../../../main';
 import replyHandler from '../../../utils/replyHandler';
 import { CreateClassAreaInput } from './classArea.schema';
 import { createClassArea } from './classArea.service';

@@ -113,6 +113,11 @@ export async function userLogin(input: CreateUserLoginInput):Promise<any>{
         },
         id: true,
         token: true,
+        guidance: {
+          select:{
+            id:true,
+          }
+        },
       }
     })
     if (student){
@@ -125,7 +130,7 @@ export async function userLogin(input: CreateUserLoginInput):Promise<any>{
           cpf: student.user.cpf,
         }
         console.log("Student logged in successfully!")
-        return {token: server.jwt.sign(tokenFormatter)}
+        return {token: server.jwt.sign(tokenFormatter), id: student.id, guidance: student.guidance}
       }else{
         console.log("Invalid Password")
         return ({data:{ "error": "Invalid Password"}})
@@ -148,6 +153,22 @@ export async function userLogin(input: CreateUserLoginInput):Promise<any>{
               cpf: true
             }
           },
+          guidances:{
+            select:{
+              id:true,
+              tcc:{
+                select:{
+                  title:true,
+                  student:{
+                    select:{
+                      id:true,
+                      name:true,
+                    }
+                  }
+                }
+              }
+            }
+          },
           id: true,
           token: true,
         }
@@ -162,7 +183,7 @@ export async function userLogin(input: CreateUserLoginInput):Promise<any>{
             cpf: teacher.user.cpf,
           }
           console.log("Teacher logged in successfully!")
-          return {token: server.jwt.sign(tokenFormatter)}
+          return {token: server.jwt.sign(tokenFormatter), id: teacher.id, guidances: teacher.guidances}
         }else{
           console.log("invalid password")
           return ({ data: {"error": "invalid password"}})

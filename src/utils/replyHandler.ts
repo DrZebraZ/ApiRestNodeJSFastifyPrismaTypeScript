@@ -17,14 +17,18 @@ export default function replyHandler(input: any, texto: string, code:number, rep
 
   } else if( "token" in input ){
 
+    console.log("Success: "+ texto)
     return reply.code(200).send(input)
 
   }else if( "data" in input && "error" in input["data"]){
-    
+
+    console.log("Error: "+ input["data"]["error"])
     return reply.code(400).send({ data: input["data"]})
   
   }else if( "data" in input ){
 
+
+    console.log("Success: "+ texto)
     return reply.code(200).send({ data: input["data"]})
 
   }else{

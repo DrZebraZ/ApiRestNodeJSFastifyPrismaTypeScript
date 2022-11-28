@@ -16,6 +16,8 @@ import { classAreaSchemas } from './v1/modules/classArea/classArea.schema';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { hashPassword } from './utils/hash';
 import { string } from 'zod';
+import teacherRoutesV1 from './v1/modules/teacher/teacher.route';
+import { teacherSchemas } from './v1/modules/teacher/teacher.schema';
 
 
 export const server = require('fastify')()
@@ -40,18 +42,19 @@ server.decorate(
   }
 })
 
-export async function RequireAdmin(request:FastifyRequest, reply:FastifyReply) {
-  console.log("require admin")
-  try{
-    const token = request.headers.authorization
-    console.log(token)
-    if (token != ADMIN){
-      throw new Error("YOU AREN'T ADMIN!");
+server.decorate(
+  'RequireAdmin',
+  async (request: any, reply: any) => {
+    try{
+      const token = request.headers.authorization
+      if (token != ADMIN){
+        throw new Error("You have no access to this function!")
+      }
+    }catch(e){
+      reply.code(404).send(e)
     }
-  }catch(e){
-    reply.code(401).send(e)
   }
-}
+)
 
 server.get('/healthcheck', async function() {
   return { status: "OK"};
@@ -63,7 +66,7 @@ server.post('/generatePassword', async function(request:FastifyRequest<{Body: {p
 
 async function main(){
 
-  for (let schema of [...userSchemas, ...msgSchemas, ...tccSchemas, ...classSchemas, ...classAreaSchemas]){
+  for (let schema of [...userSchemas, ...msgSchemas, ...tccSchemas, ...classSchemas, ...classAreaSchemas, ...teacherSchemas]){
     await server.addSchema(schema);
   }
 
@@ -73,6 +76,7 @@ async function main(){
   server.register(tccRoutesV1, { prefix: 'api/v1/tcc' })
   server.register(guidanceRoutesV1, { prefix: 'api/v1/guidance' })
   server.register(messagesRoutesV1, { prefix: 'api/v1/messages' })
+  server.register(teacherRoutesV1, { prefix: 'api/v1/teacher'})
 
   try{
     await server.listen({ port: 3333, host: '0.0.0.0'})

@@ -1,6 +1,6 @@
 import { generateClassID } from '../../../utils/generate';
 import prisma from '../../../utils/prisma';
-import { CreateClassInput, GetClassProfessorInput, GetClassUsersInput } from './class.schema';
+import { CreateClassInput, GetClassTeacherInput, GetClassUsersInput } from './class.schema';
 
 
 
@@ -50,12 +50,11 @@ export async function getUsersByClassId(input: GetClassUsersInput){
   const { classId } = input
   return await prisma.class.findMany({
     select:{
-      users:{
+      students:{
         select:{
           id: true,
           name: true,
-          email: true,
-          personalDescription: true,
+          userEmail: true,
         }, orderBy:{
           name: "asc"
         }
@@ -66,16 +65,15 @@ export async function getUsersByClassId(input: GetClassUsersInput){
   })
 }
 
-export async function getProfessorsByClassId(input: GetClassProfessorInput){
+export async function getTeachersByClassId(input: GetClassTeacherInput){
   const { classId } = input
   return await prisma.class.findMany({
     select:{
-      professors:{
+      teachers:{
         select:{
           id: true,
           name: true,
-          email: true,
-          personalDescription: true,
+          userEmail: true,
         }, orderBy:{
           name: "asc"
         }
@@ -85,3 +83,4 @@ export async function getProfessorsByClassId(input: GetClassProfessorInput){
     }
   })
 }
+

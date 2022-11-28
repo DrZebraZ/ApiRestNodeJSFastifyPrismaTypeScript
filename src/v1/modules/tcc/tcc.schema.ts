@@ -7,21 +7,32 @@ const tccCore = {
 }
 
 const createTccSchema = z.object({
-  title : z.string({ required_error: "Must inform a Title"}).min(5, { message: 'min 5 digits'}),
-  summary: z.string({ required_error: "Must inform a Description"})
+  ...tccCore
 })
 
 export type CreateTccInput = z.infer<typeof createTccSchema>;
 
-const updateTccUrlSchema = z.object({
+const updateTccSchema = z.object({
   ...tccCore,
+  id: z.string({required_error: "Must inform the Tcc ID"}).length(14,{message:"Must inform the Tcc ID (14 characters required)"}),
   docFileLink: z.string({required_error: "must inform the PDF URL"}).url()
 })
 
+const assignTeacherToTCCAndGuidanceSchema = z.object({
+  teacherId: z.string({ required_error : "must inform a teacher id"}).length(8, { message: "must be 8 char long"}),
+  tccId: z.string({required_error: "Must inform the Tcc ID"}).length(14,{message:"Must inform the Tcc ID (14 characters required)"}),
+})
+
+export type AssignTeacherToTCCAndGuidanceInput = z.infer<typeof assignTeacherToTCCAndGuidanceSchema>
+
+export type UpdateTccInput = z.infer<typeof updateTccSchema>
 
 const models = {
   createTccSchema,
-  updateTccUrlSchema
+  updateTccSchema,
+  assignTeacherToTCCAndGuidanceSchema
 }
+
+
 
 export const { schemas: tccSchemas, $ref} = buildJsonSchemas(models, {$id: "tccSchemas"})

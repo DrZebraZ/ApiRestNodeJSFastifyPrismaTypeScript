@@ -1,16 +1,8 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { createClass, getClasses, getProfessorsByClassId, getUsersByClassId } from './class.service';
-import { CreateClassInput, GetClassProfessorInput, GetClassUsersInput } from './class.schema';
+import { createClass, getClasses, getTeachersByClassId, getUsersByClassId } from './class.service';
+import { CreateClassInput, GetClassUsersInput, GetClassTeacherInput } from './class.schema';
 import errorHandler from '../../../utils/errorHandle';
 import replyHandler from '../../../utils/replyHandler';
-
-
-export async function registerClassHandler(request: FastifyRequest<{Body : CreateClassInput}>,reply: FastifyReply){
-  const body = request.body
-  const newClass = await createClass(body);
-  return replyHandler({"data":newClass}, "register new Class", 201, reply)
-}
-
 
 export async function getClassesHandler(){
   try{
@@ -20,6 +12,11 @@ export async function getClassesHandler(){
   }
 }
 
+export async function registerClassHandler(request: FastifyRequest<{Body : CreateClassInput}>,reply: FastifyReply){
+  const body = request.body
+  const newClass = await createClass(body);
+  return replyHandler({"data":newClass}, "register new Class", 201, reply)
+}
 
 export async function getUsersByClassIdHandler(request: FastifyRequest<{Querystring: GetClassUsersInput}>,reply: FastifyReply,){
   console.log("Getting users from class " + request.query.classId)
@@ -33,14 +30,11 @@ export async function getUsersByClassIdHandler(request: FastifyRequest<{Querystr
   }
 }
 
-export async function getProfessorsByClassIdHandler(
-  request: FastifyRequest<{Querystring: GetClassProfessorInput}>,
-  reply: FastifyReply
-){
-  console.log("Getting professors from class " + request.query.classId)
+export async function getProfessorsByClassIdHandler(request: FastifyRequest<{Querystring: GetClassTeacherInput}>,reply: FastifyReply){
   const query = request.query
+  console.log("Getting professors from class " + query.classId)
   try{
-    const professors = await getProfessorsByClassId(query)
+    const professors = await getTeachersByClassId(query)
     console.log("Get professors successfully")
     return professors[0]
   }catch(e){

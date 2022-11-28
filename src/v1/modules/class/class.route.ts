@@ -1,13 +1,14 @@
 import { FastifyInstance} from "fastify";
-import { RequireAdmin } from "../../../main";
 import { getClassesHandler, getProfessorsByClassIdHandler, getUsersByClassIdHandler, registerClassHandler } from "./class.controllers";
+import { $ref } from "./class.schema";
 
 async function classRoutesV1(server: FastifyInstance){
 
-  server.post('/create', {preHandler:RequireAdmin}, registerClassHandler);
   server.get('/getAllClasses' ,getClassesHandler);
-  server.get('/getUsers', getUsersByClassIdHandler);
-  server.get('/getProfessors', getProfessorsByClassIdHandler);
+
+  server.post('/create', {preHandler:[server.RequireAdmin], schema:{body:$ref('createClassSchema')}}, registerClassHandler);
+  server.get('/getUsers', {preHandler:[server.RequireAdmin], schema:{querystring:$ref('getClassUsersSchema')}}, getUsersByClassIdHandler);
+  server.get('/getTeachers', {preHandler:[server.RequireAdmin],schema:{querystring:$ref('getClassTeacherSchema')} } ,getProfessorsByClassIdHandler);
   
 }
 export default classRoutesV1

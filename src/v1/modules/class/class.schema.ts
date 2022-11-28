@@ -1,5 +1,5 @@
 import { buildJsonSchemas } from "fastify-zod";
-import { TypeOf, z } from "zod";
+import { z } from "zod";
 
 
 const createClassSchema = z.object({
@@ -12,23 +12,22 @@ const getClassUsersSchema = z.object({
 })
 
 
-const getClassProfessorSchema = z.object({
+const getClassTeacherSchema = z.object({
   classId : z.string({ required_error: "must inform a class"}).length(4, { message: "must be 4 char long"})
 })
-
 
 export type CreateClassInput = z.infer<typeof createClassSchema>;
 
 export type GetClassUsersInput = z.infer<typeof getClassUsersSchema>;
 
-export type GetClassProfessorInput = z.infer<typeof getClassProfessorSchema>;
+export type GetClassTeacherInput = z.infer<typeof getClassTeacherSchema>;
 
 
 const models = {
 
   createClassSchema,
   getClassUsersSchema,
-  getClassProfessorSchema
+  getClassTeacherSchema,
 
 }
 
