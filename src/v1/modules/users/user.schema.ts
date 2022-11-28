@@ -18,17 +18,11 @@ const createStudentSchema = z.object({
 })
 export type CreateStudentInput = z.infer<typeof createStudentSchema>;
 
-const createProfessorSchema = z.object({
+const createTeacherSchema = z.object({
   ...createUserCore,
 })
-export type CreateProfessorInput = z.infer<typeof createProfessorSchema>
+export type CreateTeacherInput = z.infer<typeof createTeacherSchema>
 
-
-const createUserResponseSchema = z.object({
-  ...userCore,
-  id: z.string(),
-  token: z.string(),
-})
 
 const createUserLoginSchema = z.object({
   email: z.string({required_error: "Must inform a email"}).email({ message: 'Must be a valid email' }),
@@ -47,7 +41,7 @@ export type ChangePasswordInput = z.infer<typeof createChangePasswordSchema>
 
 const models = {
   createStudentSchema,
-  createProfessorSchema,
+  createTeacherSchema,
   createUserLoginSchema,
   createChangePasswordSchema
 }

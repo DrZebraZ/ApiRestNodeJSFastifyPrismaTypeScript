@@ -21,15 +21,20 @@ export default function errorHandler(e: any, message: string, reply:FastifyReply
     other = e.meta
     code = e.code.toString()
     if (e.code === 'P2002'){
-      console.log("error 03")
+      console.log("error 02-01")
       code = 'error 03'
       other = 'This value is already in use on field(s): ' + e.meta.target.toString()
+    }
+    else if (e.code === 'P2003'){
+      console.log("error 02-02")
+      code = 'error 02-02'
+      other = {'Error on foreign key field: ': e.meta}
     }
   }
   else if (e instanceof Prisma.PrismaClientValidationError){
     statusCode = 404
     errorMessage = message
-    code = "error 04"
+    code = "error 03"
     other = e.message
   }
   return reply.

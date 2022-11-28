@@ -4,13 +4,14 @@ import errorHandler from './errorHandle';
 
 export default function replyHandler(input: any, texto: string, code:number, reply: FastifyReply, other?:any){
   console.log("Reply Handler")
+  console.log(input)
   if (input === true){
 
     console.log("Success: "+ texto );
     
     return reply.code(code).send({ message: "Success: "+texto})
 
-  } else if( input === false){
+  } else if( input === false ){
 
     return reply.code(400).send({ message: "Failed: "+ texto})
 
@@ -22,7 +23,7 @@ export default function replyHandler(input: any, texto: string, code:number, rep
     
     return reply.code(400).send({ data: input["data"]})
   
-  }else if( "data" in input){
+  }else if( "data" in input ){
 
     return reply.code(200).send({ data: input["data"]})
 

@@ -13,7 +13,7 @@ export function generateClassID(): string {
   return id.toUpperCase()
 }
 
-export function generateProfessorID(): string {
+export function generateTeacherID(): string {
   const generate = new ShortUniqueId({length: 8})
   const id = String(generate())
   return id

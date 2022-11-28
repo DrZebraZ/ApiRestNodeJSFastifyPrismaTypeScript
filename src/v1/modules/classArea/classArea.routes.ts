@@ -6,7 +6,7 @@ import { $ref } from "./classArea.schema";
 
 async function classAreaRoutesV1(server: FastifyInstance){
 
-  server.post('/create', {preHandler:[RequireAdmin], schema:{body:$ref('createClassAreaSchema')}}, registerClassAreaHandler);
+  server.post('/create', {preHandler:RequireAdmin ,schema:{body:$ref('createClassAreaSchema')}}, registerClassAreaHandler);
 
 }
 export default classAreaRoutesV1

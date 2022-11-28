@@ -1,4 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
+import { RequireAdmin } from '../../../main';
+import replyHandler from '../../../utils/replyHandler';
 import { CreateClassAreaInput } from './classArea.schema';
 import { createClassArea } from './classArea.service';
 
@@ -12,7 +14,6 @@ export async function registerClassAreaHandler(
     console.log("Class Area Created")
     return reply.code(201).send(classArea);
   }catch(e){
-    console.log("error at classAreaControllers registerClassAreaHandler " + e)
-    return reply.code(500).send(e)
+    return replyHandler({"data":{"error": "Admin Only!"}}, "creating class area", 500, reply)
   }
 }

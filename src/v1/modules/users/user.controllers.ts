@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { ChangePasswordInput, CreateProfessorInput, CreateStudentInput } from "./user.schema";
-import { changePassword, createProfessor, createStudent, getAllUsers, userLogin } from "./user.service";
+import { ChangePasswordInput, CreateTeacherInput, CreateStudentInput } from "./user.schema";
+import { changePassword, createTeacher, createStudent, getAllUsers, userLogin } from "./user.service";
 import { CreateUserLoginInput } from '../users/user.schema';
 import replyHandler from '../../../utils/replyHandler';
 import { RequireAdmin } from "../../../main";
@@ -16,16 +16,16 @@ export async function registerUserHandler(request: FastifyRequest<{ Body: Create
 
 }
 
-export async function registerProfessorHandler(request: FastifyRequest<{ Body: CreateProfessorInput}>,reply:FastifyReply){
+export async function registerTeacherHandler(request: FastifyRequest<{ Body: CreateTeacherInput}>,reply:FastifyReply){
 
   try{
     RequireAdmin
     console.log("Creating Professor...")
     const body = request.body
-    const professor = await createProfessor(body);
-    return replyHandler(professor, "Create Professor", 201, reply)
+    const professor = await createTeacher(body);
+    return replyHandler(professor, "Create Teacher", 201, reply)
   }catch(e){
-    return replyHandler(e, "Create Professor", 500, reply)
+    return replyHandler(e, "Create Teacher", 500, reply)
   }
   
 

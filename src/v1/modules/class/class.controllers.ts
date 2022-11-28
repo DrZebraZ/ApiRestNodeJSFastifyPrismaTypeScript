@@ -8,8 +8,7 @@ import replyHandler from '../../../utils/replyHandler';
 export async function registerClassHandler(request: FastifyRequest<{Body : CreateClassInput}>,reply: FastifyReply){
   const body = request.body
   const newClass = await createClass(body);
-  return replyHandler(newClass, "new Class", 201, reply)
-  
+  return replyHandler({"data":newClass}, "register new Class", 201, reply)
 }
 
 

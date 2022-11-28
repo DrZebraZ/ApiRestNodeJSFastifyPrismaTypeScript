@@ -20,8 +20,8 @@ model User {
   password String
   salt     String
 
-  Student   Student[]
-  Professor Professor[]
+  student Student[]
+  teacher Teacher[]
 }
 
 model Student {
@@ -37,7 +37,7 @@ model Student {
 
   token String @unique @default(cuid())
 
-  Tccs     Tcc[]
+  tcc      Tcc[]
   guidance Guidance[]
   classId  String
 
@@ -45,7 +45,7 @@ model Student {
   userEmail String
 }
 
-model Professor {
+model Teacher {
   id                  String   @id @default(cuid())
   name                String
   datenasc            String?
@@ -74,10 +74,10 @@ model Class {
   classAreaId String
 
   coordinatorId String?
-  coordinator   Professor? @relation(name: "coordinator", fields: [coordinatorId], references: [id])
+  coordinator   Teacher? @relation(name: "coordinator", fields: [coordinatorId], references: [id])
 
-  students   Student[]
-  professors Professor[]
+  students  Student[]
+  teatchers Teacher[]
 
   tccs Tcc[]
 
@@ -95,34 +95,34 @@ model Tcc {
   title       String
   summary     String
   classId     String
-  studantId   String
-  professorId String?
+  studentId   String
+  teacherId   String?
   guidanceId  String?
   docFileLink String? @unique
 
   status String @default("ANDAMENTO")
 
-  student Student @relation(fields: [studantId], references: [id])
+  student Student @relation(fields: [studentId], references: [id])
 
-  professor Professor? @relation(fields: [professorId], references: [id])
+  teacher Teacher? @relation(fields: [teacherId], references: [id])
 
   guidance Guidance?
   Class    Class     @relation(fields: [classId], references: [id])
 }
 
 model Guidance {
-  id          String     @id @unique
-  tccId       String     @unique
-  professorId String?
-  studantId   String
-  messages    Message[]
-  professor   Professor? @relation(fields: [professorId], references: [id])
-  studant     Student    @relation(fields: [studantId], references: [id])
+  id        String    @id @unique
+  tccId     String    @unique
+  teacherId String?
+  studentId String
+  messages  Message[]
+  teacher   Teacher?  @relation(fields: [teacherId], references: [id])
+  student   Student   @relation(fields: [studentId], references: [id])
 
   tcc Tcc @relation(fields: [tccId], references: [id])
 
-  @@index([id, studantId])
-  @@index([id, professorId])
+  @@index([id, studentId])
+  @@index([id, teacherId])
 }
 
 model Message {

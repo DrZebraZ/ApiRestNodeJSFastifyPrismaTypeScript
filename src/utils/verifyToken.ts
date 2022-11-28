@@ -13,6 +13,11 @@ export async function getID(header:any):Promise<string>{
   return token
 }
 
+export async function getInfoOnJWT(header:any):Promise<any>{
+  const authorized: any = await jwtDecode(header)
+  return authorized
+}
+
 
 
 /*

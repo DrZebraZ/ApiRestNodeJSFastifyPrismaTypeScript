@@ -1,44 +1,52 @@
-import jwtDecode from "jwt-decode";
 import prisma from "../../../utils/prisma";
-import { CreateTccInput } from "./tcc.schema";
+import { CreateTccInput } from './tcc.schema';
 import { generateTccID, generateGuidanceID } from '../../../utils/generate';
 import { getToken } from "../../../utils/verifyToken";
 
 export async function createTCC(input: CreateTccInput, header:any):Promise<any>{
   const token = await getToken(header)
+  console.log(token)
   const { title, summary } = input
   if (!title){
-    return "missing title"
+    return ({data:{"error": "Missing Title"}})
   }
   else if (!summary){
-    return "missing summary"
+    return ({data:{"error":"missing summary"}})
   }
-  const user = await prisma.user.findUnique({
+  const student = await prisma.student.findUnique({
     where:{
       token: token
     }
   })
-  if (user){
+  console.log("achou")
+  if (student){
     try{
       const idTcc = generateTccID()
       const idGuidance = generateGuidanceID()
-      await prisma.tcc.create({
+      const tcc = await prisma.tcc.create({
         data:{
           id: idTcc,
-          summary,
-          title,
-          classId: user.classId,
-          userId:user.id,
+          title: title,
+          summary: summary,
+          classId: student.classId,
+          studentId: student.id,
+          guidance:{
+            create:{
+              id: idGuidance,
+              studentId: student.id,
+            }
+          }
         }
       })
-      await prisma.guidance.create({
+      const tcc2 = await prisma.tcc.update({
+        where:{
+          id: tcc.id,
+        },
         data:{
-          id: idGuidance,
-          tccId: idTcc,
-          userId: user.id,
+          guidanceId: idGuidance,
         }
       })
-      return (true)
+      return ({"data": tcc2})
     }catch(e){
       return e
     }
