@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 const tccCore = {
   title : z.string({ required_error: "Must inform a Title"}).min(5, { message: 'min 5 digits'}),
-  summary: z.string({ required_error: "Must inform a Description"})
+  summary: z.string({ required_error: "Must inform a Description"}).min(10, { message: 'min 10 digits'}),
 }
 
 const createTccSchema = z.object({

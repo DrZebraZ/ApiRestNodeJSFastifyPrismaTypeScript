@@ -26,6 +26,9 @@ export async function updateTccHandler(request: FastifyRequest<{Body: UpdateTccI
   return replyHandler(tcc, "Updating TCC", 201, reply)
 }
 
+
+
+//ADMIN USAGE
 export async function assignTeacherToTccAndGuidanceHandler(request: FastifyRequest<{Body: AssignTeacherToTCCAndGuidanceInput}>, reply: FastifyReply){
   console.log("Assigning Teacher to TCC and Guidance")
   const headers = request.headers.authorization

@@ -30,7 +30,7 @@ declare module "fastify"{
   }
 }
 
-server.register(require('@fastify/jwt'), { secret: SUPERSECRET})
+server.register(require('@fastify/jwt'), {secret: SUPERSECRET})
 
 server.decorate(
   'RequireAuth',
@@ -38,7 +38,7 @@ server.decorate(
   try{
     await request.jwtVerify()
   }catch(e){
-    reply.code(401).send(e)
+    reply.code(403).send(e)
   }
 })
 
@@ -51,7 +51,7 @@ server.decorate(
         throw new Error("You have no access to this function!")
       }
     }catch(e){
-      reply.code(404).send(e)
+      reply.code(403).send(e)
     }
   }
 )

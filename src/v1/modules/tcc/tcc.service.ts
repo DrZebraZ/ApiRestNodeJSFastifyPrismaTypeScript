@@ -6,12 +6,6 @@ import { getID, getToken } from "../../../utils/verifyToken";
 export async function createTCC(input: CreateTccInput, header:any):Promise<any>{
   const token = await getToken(header)
   const { title, summary } = input
-  if (!title){
-    return ({data:{"error": "Missing Title"}})
-  }
-  else if (!summary){
-    return ({data:{"error":"missing summary"}})
-  }
   const student:any = await prisma.student.findUnique({
     where:{
       token: token
@@ -46,7 +40,7 @@ export async function createTCC(input: CreateTccInput, header:any):Promise<any>{
             create:{
               id: idGuidance,
               studentId: student.id,
-            }
+            },
           }
         }
       })
