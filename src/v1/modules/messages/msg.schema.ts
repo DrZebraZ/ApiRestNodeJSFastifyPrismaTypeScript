@@ -6,6 +6,12 @@ const guidanceCore = {
   guidanceId: z.string({required_error:"guidanceId is Required!"}).length(14, {message: "guidanceID is 14 characters long"}),
 }
 
+const createGuidanceCoreSchema = z.object({
+  ...guidanceCore
+})
+
+export type CreateGuidanceCoreInput = z.infer<typeof createGuidanceCoreSchema>
+
 const createMessageSchema = z.object({
   ...guidanceCore,
   text : z.string({ required_error: "No text informed" }).min(1,{ message : "text is empty" }),
@@ -28,7 +34,8 @@ export type EditMessageSchema = z.infer<typeof editMessageSchema>
 
 const models = {
   createMessageSchema,
-  editMessageSchema
+  editMessageSchema,
+  createGuidanceCoreSchema
 }
 
 export const { schemas: msgSchemas, $ref} = buildJsonSchemas(models, {$id:"msgSchemas"})

@@ -2,7 +2,7 @@ import { generateMessageID } from "../../../utils/generate"
 import prisma from "../../../utils/prisma"
 import { getDateNow } from "../../../utils/utils"
 import { getID } from "../../../utils/verifyToken"
-import { CreateMessageInput, EditMessageSchema } from "./msg.schema"
+import { CreateMessageInput, EditMessageSchema, CreateGuidanceCoreInput } from './msg.schema';
 
 async function byUserTrueOrProfessorFalse(senderID: string):Promise<boolean>{
   if ((senderID).length == 12){
@@ -107,5 +107,21 @@ export async function editMessage(input: EditMessageSchema, header :any){
     })
     console.log("edited")
     return true
+  }
+}
+
+export async function getMessages(input: CreateGuidanceCoreInput, headers:any):Promise<any>{
+  const id = await getID(headers)
+  const guidanceId = input.guidanceId
+  const isOn = await senderIsOnGuidance(id, guidanceId)
+  if (isOn){
+    const messages = await prisma.message.findMany({
+      where:{
+        guidanceId : guidanceId
+      }
+    })
+    return({"data": {"messages": messages}})
+  }else{
+    return({"data": {"error": "Your Id or guidanceId was not found"}})
   }
 }

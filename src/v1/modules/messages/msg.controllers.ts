@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import replyHandler from '../../../utils/replyHandler';
-import { CreateMessageInput, EditMessageSchema } from './msg.schema';
-import { createMessage, editMessage } from './msg.service';
+import { CreateMessageInput, EditMessageSchema, CreateGuidanceCoreInput } from './msg.schema';
+import { createMessage, editMessage, getMessages } from './msg.service';
 
 
 export async function createMessageHandler(request: FastifyRequest<{Body:CreateMessageInput}>, reply: FastifyReply){
@@ -21,4 +21,13 @@ export async function editMessageHandler(request: FastifyRequest<{Body:EditMessa
   const response = await editMessage(body, header)
   return replyHandler(response, "editing Message", 201, reply)
 
+}
+
+
+export async function getMessagesHandler(request: FastifyRequest<{Querystring:CreateGuidanceCoreInput}>, reply: FastifyReply){
+  console.log("Getting Messages...")
+  const query = request.query;
+  const header = request.headers.authorization
+  const response = await getMessages(query, header)
+  return replyHandler(response, "gettingMessages", 200, reply)
 }
