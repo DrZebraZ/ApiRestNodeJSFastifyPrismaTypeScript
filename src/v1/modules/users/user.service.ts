@@ -264,3 +264,9 @@ export async function editPerfil(input: EditUserInput, header: any):Promise<any>
   }
 
 }
+
+/*
+export async function changeEmail(){
+
+}
+*/
