@@ -1,16 +1,8 @@
 import { generateMessageID } from "../../../utils/generate"
 import prisma from "../../../utils/prisma"
-import { getDateNow } from "../../../utils/utils"
+import { getDateNow, returnStudentTrueOrProfessorFalse } from "../../../utils/utils"
 import { getID } from "../../../utils/verifyToken"
 import { CreateMessageInput, EditMessageSchema, CreateGuidanceCoreInput } from './msg.schema';
-
-async function byUserTrueOrProfessorFalse(senderID: string):Promise<boolean>{
-  if ((senderID).length == 12){
-    return true
-  }else {
-    return false
-  }
-}
 
 async function senderIsOnGuidance(senderID: string, guidanceId: string):Promise<boolean>{
   const isFrom = await prisma.guidance.findUnique({
@@ -28,7 +20,7 @@ async function senderIsOnGuidance(senderID: string, guidanceId: string):Promise<
 }
 //verify if the given byUser is the same from the message ( true | false ) and verify if the sender is User or Professor ( true | false ) 
 async function canEditMessage(senderID: string, messageId: string, byUser: boolean):Promise<boolean>{
-  const userOrProfessor = await byUserTrueOrProfessorFalse(senderID)
+  const userOrProfessor = await returnStudentTrueOrProfessorFalse(senderID)
   const isFrom = await prisma.message.findUnique({
     where:{
       id: messageId,
@@ -47,7 +39,7 @@ export async function createMessage(input:CreateMessageInput, header:any):Promis
   const senderID:any = await getID(header)
   const { guidanceId , text } = input
   if (await senderIsOnGuidance(senderID, guidanceId) && (text).length > 0){
-    const byUser = await byUserTrueOrProfessorFalse(senderID)
+    const byUser = await returnStudentTrueOrProfessorFalse(senderID)
     const id = generateMessageID()
     const dateNow = await getDateNow()
     try{

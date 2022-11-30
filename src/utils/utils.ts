@@ -11,6 +11,14 @@ export async function getDateNow(): Promise<Date>{
   return now;
 }
 
+export async function returnStudentTrueOrProfessorFalse(senderID: string):Promise<boolean>{
+  if ((senderID).length == 12){
+    return true
+  }else {
+    return false
+  }
+}
+
 
 
 //((now.getDate()))+"-"+"now.getMonth()"+"-"+now.getFullYear()+ "T"+((now.getHours()-3))+":"+now.getMinutes()+":"+now.getSeconds+":"+now.getMilliseconds();

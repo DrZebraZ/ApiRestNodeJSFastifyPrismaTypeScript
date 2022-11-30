@@ -1,10 +1,13 @@
 import { hashPassword, verifyPassword } from '../../../utils/hash';
 import prisma from "../../../utils/prisma";
 import { generateToken, generateStudentID, generateTeacherID } from '../../../utils/generate';
-import { CreateTeacherInput, CreateStudentInput, CreateUserLoginInput} from "./user.schema";
+import { CreateTeacherInput, CreateStudentInput, CreateUserLoginInput, EditUserInput, ChangePasswordInput} from "./user.schema";
 import { server } from '../../../main';
-import { ChangePasswordInput } from '../users/user.schema';
 import jwtDecode from 'jwt-decode';
+import { getID, getToken } from '../../../utils/verifyToken';
+import { returnStudentTrueOrProfessorFalse } from '../../../utils/utils';
+import { UserDTO } from '../users/user.schema';
+
 
 
 export async function createStudent(input: CreateStudentInput):Promise<any>{
@@ -228,3 +231,36 @@ export async function changePassword(input: ChangePasswordInput, header:any):Pro
   }
 }
 
+export async function editPerfil(input: EditUserInput, header: any):Promise<any>{
+  const token = await getToken(header)
+  const { ...rest } = input
+  const id = await getID(header)
+  var retorno: any
+  const studentOrTeacher = await returnStudentTrueOrProfessorFalse(id)
+  try{
+    if (studentOrTeacher){
+      retorno = await prisma.student.update({
+        where:{
+          token:token
+        },
+        data:{
+          ...rest
+        },
+      })
+    }else{
+      retorno = await prisma.teacher.update({
+        where:{
+          token:token
+        },
+        data:{
+          ...rest
+        }
+      })
+    }
+    retorno = UserDTO.parse(retorno)
+    return ({"data":retorno})
+  }catch(e){
+    return {"data":{"error":e}}
+  }
+
+}

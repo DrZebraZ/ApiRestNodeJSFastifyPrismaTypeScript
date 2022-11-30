@@ -25,13 +25,13 @@ model User {
 }
 
 model Student {
-  id                  String   @id @default(cuid())
+  id                  String    @id @default(cuid())
   name                String
-  datenasc            String?
+  datenasc            DateTime?
   avatarUrl           String?
   personalDescription String?
-  createdAt           DateTime @default(now())
-  active              Boolean  @default(true)
+  createdAt           DateTime  @default(now())
+  active              Boolean   @default(true)
 
   user User @relation(fields: [userEmail], references: [email])
 
@@ -46,13 +46,13 @@ model Student {
 }
 
 model Teacher {
-  id                  String   @id @default(cuid())
+  id                  String    @id @default(cuid())
   name                String
-  datenasc            String?
+  datenasc            DateTime?
   avatarUrl           String?
   personalDescription String?
-  createdAt           DateTime @default(now())
-  active              Boolean  @default(true)
+  createdAt           DateTime  @default(now())
+  active              Boolean   @default(true)
 
   user User @relation(fields: [userEmail], references: [email])
 

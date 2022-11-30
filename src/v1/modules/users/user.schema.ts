@@ -39,11 +39,28 @@ const createChangePasswordSchema = z.object({
 export type ChangePasswordInput = z.infer<typeof createChangePasswordSchema>
 
 
+const createEditUserSchema = z.object({
+  name: z.string({required_error: "Must inform a name"}).min(3, { message: 'Min 3 digits'}),
+  datenasc: z.date(),
+  avatarUrl: z.string().url(),
+  personalDescription: z.string(),
+})
+
+export type EditUserInput = z.infer<typeof createEditUserSchema>
+
+export const UserDTO = z.object({
+  name: z.string(),
+  datenasc: z.date(),
+  avatarUrl: z.string(),
+  personalDescription: z.string()
+})
+
 const models = {
   createStudentSchema,
   createTeacherSchema,
   createUserLoginSchema,
-  createChangePasswordSchema
+  createChangePasswordSchema,
+  createEditUserSchema
 }
 
 export const {schemas: userSchemas, $ref } = buildJsonSchemas(models,{$id: "userSchemas"})

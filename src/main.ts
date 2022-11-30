@@ -18,6 +18,7 @@ import { hashPassword } from './utils/hash';
 import { string } from 'zod';
 import teacherRoutesV1 from './v1/modules/teacher/teacher.route';
 import { teacherSchemas } from './v1/modules/teacher/teacher.schema';
+import { getDateNow } from './utils/utils';
 
 
 export const server = require('fastify')()
@@ -62,6 +63,10 @@ server.get('/healthcheck', async function() {
 
 server.post('/generatePassword', async function(request:FastifyRequest<{Body: {password:string}}>, reply:FastifyReply) {
   return hashPassword(request.body.password)
+})
+server.get('/getDateNow', async function(){
+  const date = await getDateNow()
+  return date
 })
 
 async function main(){

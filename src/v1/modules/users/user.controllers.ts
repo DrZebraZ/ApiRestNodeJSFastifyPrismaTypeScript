@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { ChangePasswordInput, CreateTeacherInput, CreateStudentInput } from "./user.schema";
-import { changePassword, createTeacher, createStudent, getAllUsers, userLogin } from "./user.service";
-import { CreateUserLoginInput } from '../users/user.schema';
+import { changePassword, createTeacher, createStudent, getAllUsers, userLogin, editPerfil } from "./user.service";
+import { CreateUserLoginInput, EditUserInput } from '../users/user.schema';
 import replyHandler from '../../../utils/replyHandler';
 
 export async function registerUserHandler(request: FastifyRequest<{ Body: CreateStudentInput }>, reply: FastifyReply){
@@ -28,6 +28,13 @@ export async function changePasswordHandler(request: FastifyRequest<{Body: Chang
   return replyHandler(changed, "change Password", 201, reply)
 }
 
+export async function editPerfilHandler(request: FastifyRequest<{Body: EditUserInput}>, reply: FastifyReply){
+  console.log("Editing User Profile...")
+  const headers = request.headers.authorization
+  const body = request.body
+  const retorno = await editPerfil(body, headers)
+  return replyHandler(retorno, "Editing User Profile", 201, reply)
+}
 
 /* ADMIN ONLY */
 export async function registerTeacherHandler(request: FastifyRequest<{ Body: CreateTeacherInput}>,reply:FastifyReply){
